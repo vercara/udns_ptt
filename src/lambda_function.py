@@ -27,6 +27,14 @@ def lambda_handler(event, context):
 
     telemetry_events = json.loads(event['body'])
     
+    # If it's a test, return OK
+    for event in telemetry_events['telemetryEvents']:
+        if event['telemetryEventType'] == 'TEST_TELEMETRY_WEBHOOK':
+            return {
+                'statusCode': 200,
+                'body': 'OK'
+            }
+    
     # Pull some attributes from the event JSON
     telemetry_event_type = telemetry_events['telemetryEvents'][0]['telemetryEventType']
 
