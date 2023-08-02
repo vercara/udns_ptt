@@ -1,11 +1,11 @@
 udns_ptt
 ======================
 
-This repository, udns_ptt, stands for "UltraDNS Push-to-Teams" and contains a Lambda handler which parses the telemetry event JSON that is output by Vercara's UDNS product's push notification mechanism then creates a Message Card to be consumed by a MS Teams webhook.  
+This repository, udns_ptt (UltraDNS Push-to-Teams), contains a Lambda handler. It parses the telemetry event JSON output from Vercara's UDNS product's push notification mechanism and creates a Message Card to be consumed by a Microsoft Teams webhook. 
 
 ## Creating the Lambda Function
 
-You'll need to create a Lambda function and give it an endpoint. I used the "Function URL" feature of Lambda, but this can also be done through the API Gateway.
+Create a Lambda function and provide it an endpoint. This can be done using the "Function URL" feature of Lambda, or through the API Gateway.
 
 1. Select the radio button for "Author from scratch"
 2. Name your function
@@ -13,12 +13,12 @@ You'll need to create a Lambda function and give it an endpoint. I used the "Fun
 4. Expand "Advanced Settings"
 5. Check the box next to "Enable function URL"
 6. Select "NONE" for "Auth type"
-    * The UDNS push notifications won't be capable of sending an authorization header, but you can restrict your function url to their specific IPs. I will get to this below.
+    * The UDNS push notifications won't be capable of sending an authorization header, but you can restrict your function url to specific IPs. More on this below.
 7. Click "Create Function"
 
 ## Creating a Deployment Package
 
-I'm using the 'requests' module, so we should include that in the deployment package. Assuming you're in the root directory of this repo, do the following:
+Since we're using the 'requests' module, it needs to be included in the deployment package. Assuming you're in the root directory of this repo, do the following:
 
 ```bash
 mkdir lambda_package
@@ -35,11 +35,11 @@ Upload this in the Management Console (or through the CLI). In the UI:
 
 ## Set the Environment Variables
 
-There are two environment variables used by this function and one is required.
+The function uses two environment variables, one of which is required.
 
 ### WEBHOOK_URL
 
-The `WEBHOOK_URL` is the link to the webhook you've configured in Teams. Follow these steps to create one:
+`WEBHOOK_URL` is the link to the webhook you've configured in Teams. Follow these steps to create one:
 
 1. Go to your Teams channel
 2. Click on the "..." in the top right
@@ -63,7 +63,7 @@ Go to your Lambda function in the Management Console.
 
 ### WHITELISTED_IPS
 
-By default the function will allow requests from anyone. By defining the "WHITELISTED_IPS" variable, you will restrict access to certain IPs, the ones belonging to UDNS's push notification application servers.
+By default, the function accepts requests from any source. However, by defining the "WHITELISTED_IPS" variable, you restrict access to certain IPs, specifically those belonging to UDNS's push notification application servers.
 
 1. Again, navigate to the "Configuration" tab in Lambda
 2. Click "Environment variables"
@@ -75,7 +75,9 @@ By default the function will allow requests from anyone. By defining the "WHITEL
 
 ## Creating the Push Notification
 
-In the UDNS UI, or through the API, you need to create a Push Notification. The UDNS system will test the endpoint to make sure it's responsive before it will start publishing messages to it. I'll describe how to create one through the API and include Postman collection in the "postman" directory.
+To create a Push Notification in the UDNS UI or through the API, follow the steps below. The UDNS system will test the endpoint to ensure its responsiveness before it starts publishing messages to it. We will describe how to create one through the API and include a Postman collection in the "postman" directory.
+
+### REST API
 
 1. Send an authorization request to the UDNS REST API and generate a Bearer token. The request body is x-www-form-urlencoded and needs to contain a grant_type and your username/password.
 
@@ -143,8 +145,6 @@ If there was an issue creating the telemetry event then there will be an error m
 All of the params available for the "include" object are: ALL_CHANGES, DOMAIN_CHANGES, RECORD_CHANGES, USER_GROUP_CHANGES, ALL_EVENTS, ZONE_EVENTS, FAILOVER_EVENT, DNSSEC_EVENT, XFR_EVENTS, ZONE_TRANSFER_SUCCESS, ZONE_TRANSFER_FAILURE, AUTHENTICATION_EVENTS, LOGIN_SUCCESS and LOGIN_FAILURE
 
 ### From the UI
-
-In the UDNS UI follow these steps:
 
 1. Click on "Accounts" in the left-hand navigation
 2. Click on your account name
