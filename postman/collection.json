@@ -1,0 +1,157 @@
+{
+	"info": {
+		"_postman_id": "355a7902-5dbe-472a-a0dd-5e9cb2d4340d",
+		"name": "UDNS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2146434"
+	},
+	"item": [
+		{
+			"name": "Authorization",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "{username}",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "{password}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://api.ultradns.com/authorization/token",
+					"protocol": "https",
+					"host": [
+						"api",
+						"ultradns",
+						"com"
+					],
+					"path": [
+						"authorization",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Webhook - Test Endpoint",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {bearer_token}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"url\": \"{endpoint_url}\",\r\n    \"type\": \"TEST_TELEMETRY_WEBHOOK\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.ultradns.com/accounts/{account_name}/telemetryWebhook/test",
+					"protocol": "https",
+					"host": [
+						"api",
+						"ultradns",
+						"com"
+					],
+					"path": [
+						"accounts",
+						"{account_name}",
+						"telemetryWebhook",
+						"test"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Webhook - Verify",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {bearer_token}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://api.ultradns.com/accounts/{account_name}/telemetryWebhook/test/{telemetry_id}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"ultradns",
+						"com"
+					],
+					"path": [
+						"accounts",
+						"{account_name}",
+						"telemetryWebhook",
+						"test",
+						"{telemetry_id}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Webhook - Create",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {bearer_token}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"webhooks\": [\r\n        {\r\n            \"enable\": true,\r\n            \"url\": \"{endpoint_url}\",\r\n            \"include\": {\r\n                \"ALL_CHANGES\": true\r\n            }\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.ultradns.com/accounts/{account_name}/settings/PUSH_NOTIFICATIONS",
+					"protocol": "https",
+					"host": [
+						"api",
+						"ultradns",
+						"com"
+					],
+					"path": [
+						"accounts",
+						"{account_name}",
+						"settings",
+						"PUSH_NOTIFICATIONS"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
