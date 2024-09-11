@@ -24,7 +24,8 @@ Since we're using the 'requests' module, it needs to be included in the deployme
 mkdir lambda_package
 pip install requests -t lambda_package
 cp src/lambda_function.py lambda_package/lambda_function.py
-zip -r lambda_package.zip lambda_package
+cd lambda_package
+zip -r ../lambda_package.zip .
 ```
 
 Upload this in the Management Console (or through the CLI). In the UI:
@@ -43,13 +44,9 @@ The function uses two environment variables, one of which is required.
 
 1. Go to your Teams channel
 2. Click on the "..." in the top right
-3. Click on "Connectors"
-4. Search for "Incoming Webhook"
-    * If the button next to it says "Add," then click that to Add the plugin and navigate back to Connectors to proceed
-5. Click "Configure"
-6. Give your webhook a name
-7. Click "Create"
-8. Copy the URL, this is where you will push the notifications
+3. Click on "Workflows"
+4. Search for and select "Post to a channel when a webhook request is received"
+5. Follow the prompts and copy the webhook URL, this is where notifications will be pushed.
 
 Go to your Lambda function in the Management Console.
 

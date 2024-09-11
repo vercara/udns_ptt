@@ -49,36 +49,57 @@ def lambda_handler(event, context):
     
     # Define Teams card
     teams_message = {
-        "@type": "MessageCard",
-        "@context": "http://schema.org/extensions",
         "summary": "{0} {1} {2} {3}".format(account_name, telemetry_event_type, object_type, change_type),
-        "sections": [
+        "attachments": [
             {
-                "activityTitle": "{0} {1} {2} {3}".format(account_name, telemetry_event_type, object_type, change_type),
-                "facts": [
-                    {"name": "Time", "value": change_time},
-                    {"name": "Object Type", "value": object_type},
-                    {"name": "Change Type", "value": change_type},
-                    {"name": "Object", "value": ultra_object},
-                    {"name": "Account", "value": account_name},
-                    {"name": "User", "value": ultra_user},
-                    {"name": "Application", "value": change_source}
-                ],
-                "markdown": True
+                "contentType": "application/vnd.microsoft.card.adaptive",
+                "content": {
+                    "type": "AdaptiveCard",
+                    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                    "version": "1.2",
+                    "body": [
+                        {
+                            "type": "TextBlock",
+                            "text": "**{0} {1}**".format(account_name, telemetry_event_type),
+                            "weight": "Bolder",
+                            "size": "Medium"
+                        },
+                        {
+                            "type": "FactSet",
+                            "facts": [
+                                {"title": "Time", "value": change_time},
+                                {"title": "Object Type", "value": object_type},
+                                {"title": "Change Type", "value": change_type},
+                                {"title": "Object", "value": ultra_object},
+                                {"title": "Account", "value": account_name},
+                                {"title": "User", "value": ultra_user},
+                                {"title": "Application", "value": change_source}
+                            ]
+                        }
+                    ]
+                }
             }
         ]
     }
-    
+
     # This section will format the specific change details
     if 'detail' in telemetry_event:
         changes_array = telemetry_event['detail']['changes']
+        additional_facts = []
         for change in changes_array:
-            teams_message['sections'][0]['facts'].extend([
-                {"name": "Value", "value": change['value'] if change['value'] else '-'},
-                {"name": "From", "value": change['from'] if change['from'] else '-'},
-                {"name": "To", "value": change['to'] if change['to'] else '-'}
-            ])
-    
+            additional_facts.append(
+                {"title": "Value", "value": change['value'] if change['value'] else '-'}
+            )
+            additional_facts.append(
+                {"title": "From", "value": change['from'] if change['from'] else '-'}
+            )
+            additional_facts.append(
+                {"title": "To", "value": change['to'] if change['to'] else '-'}
+            )
+        
+        # Extend the FactSet with additional change details
+        teams_message['attachments'][0]['content']['body'][1]['facts'].extend(additional_facts)
+
     # Send the message to Teams
     response = requests.post(webhook_url, json.dumps(teams_message), headers={'Content-Type': 'application/json'})
     response.raise_for_status()
