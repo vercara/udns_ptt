@@ -22,7 +22,7 @@ Since we're using the 'requests' module, it needs to be included in the deployme
 
 ```bash
 mkdir lambda_package
-pip install dnspython -t lambda_package
+pip install requests -t lambda_package
 cp src/lambda_function.py lambda_package/lambda_function.py
 zip -r lambda_package.zip lambda_package
 ```
